@@ -12,6 +12,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var subject = "java";
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +20,24 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           children: [
             RadioListTile(
-                value: "java"
+              value: "java",
+              title: Text("자바"),
+              groupValue: subject,
+              onChanged: (value){
+                setState(() {
+                  subject = value!;
+                });
+              },
+            ),
+            RadioListTile(
+              value: "mySql",
+              title: Text("mySql"),
+              groupValue: subject,
+              onChanged: (value){
+                setState(() {
+                  subject = value!;
+                });
+              },
             )
           ],
         ),
