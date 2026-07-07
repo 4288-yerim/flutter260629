@@ -42,4 +42,20 @@ class DB {
     final db = await getDatabase();
     return db.query("TBL_USER");
   }
+
+  static Future<void> deleteUser(int userId) async{
+    final db = await getDatabase();
+    await db.delete("TBL_USER", where: "userId = ?", whereArgs: [userId]);
+  }
+
+  static Future<void> updateUser(String name, int age, int userId) async{
+    final db = await getDatabase();
+    await db.update("TBL_USER", {"name" : name, "age" : age}, where: "userId = ?", whereArgs: [userId]);
+  }
+
+  static Future<List<Map<String, dynamic>>> selectUser(int userId) async{
+    final db = await getDatabase();
+    return db.query("TBL_USER", where: "userId = ?", whereArgs: [userId]);
+  }
+
 }

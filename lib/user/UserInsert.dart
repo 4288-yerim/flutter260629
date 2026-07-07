@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/user/UserList.dart';
+import 'UserList.dart';
 import 'DB.dart';
 
 void main(){
@@ -31,14 +31,14 @@ class _UserInsertScreenState extends State<UserInsertScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("sqflite 실습"),
+        title : Text("sqflite 실습"),
         actions: [
           IconButton(
               onPressed: (){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UserListState()
+                      builder: (context) => UserList(),
                     )
                 );
               },
@@ -53,7 +53,7 @@ class _UserInsertScreenState extends State<UserInsertScreen> {
             TextField(
               controller: nameCtrl,
               decoration: InputDecoration(
-                labelText: "이름"
+                  labelText: "이름"
               ),
             ),
             TextField(
