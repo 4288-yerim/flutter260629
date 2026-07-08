@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../firebase_options.dart';
 
-
 void main() async {
   // Flutter 프레임워크와의 초기화
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,31 +29,47 @@ class MyApp extends StatelessWidget {
     Future<void> addUser() async{
       Map<String, dynamic> user = {
         "name" : "김철수",
-        "age" : "20",
+        "age" : 20,
         "cdate" : Timestamp.now()
       };
       await fs.collection("users").add(user);
       // await fs.collection("users").add({
       //   "name" : "김철수",
-      //   "age" : "20",
+      //   "age" : 20,
       //   "cdate" : Timestamp.now()
       // });
 
       // 문서 ID 직접 넣는 경우
-      await fs.collection("users").doc("abcd").set(user);
+      // await fs.collection("users").doc("abcd").set(user);
     }
 
     Future<void> getUserList() async{
-      // final snapshort = await fs.collection("users").get();
-      final snapshort = 
+      // final snapshot = await fs.collection("users").get();
+      final snapshot =
         await fs.collection("users")
-            // .where("age", isGreaterThan: 20) // age > 20
-            .where("age", isGreaterThanOrEqualTo: 25)
-            .orderBy("age") // age 필드 기준으로 오름차순
+            .where("age", isGreaterThan: 20) // age > 20
+            // .where("age", isGreaterThanOrEqualTo: 20)
+            // .orderBy("age") // age 필드 기준으로 오름차순
             .orderBy("age", descending: true) // age 필드 기준으로 내림차순
             .get();
+      // snapshort.docs
+      for(var doc in snapshot.docs){
+        Map<String, dynamic> user = doc.data();
+        print("문서 ID : ${doc.id}, 이름 : ${user["name"]}, 나이 : ${user["age"]}");
+      }
+
     }
 
+    Future<void> updateUser() async{
+      await fs.collection("users").doc("Nf2GTJNu9JeVq8gFf60k").update({
+        "name" : "박영희",
+        "age" : 25
+      });
+    }
+
+    Future<void> deleteUser() async{
+      await fs.collection("users").doc("o7k03e1trcU3aY8pr1UF").delete();
+    }
 
     return MaterialApp(
       home: Scaffold(
@@ -65,7 +80,19 @@ class MyApp extends StatelessWidget {
               ElevatedButton(
                   onPressed: addUser,
                   child: Text("추가")
-              )
+              ),
+              ElevatedButton(
+                  onPressed: getUserList,
+                  child: Text("출력")
+              ),
+              ElevatedButton(
+                  onPressed: updateUser,
+                  child: Text("수정")
+              ),
+              ElevatedButton(
+                  onPressed: deleteUser,
+                  child: Text("삭제")
+              ),
             ],
           ),
         ),
