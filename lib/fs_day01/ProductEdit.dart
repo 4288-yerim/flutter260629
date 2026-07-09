@@ -4,54 +4,55 @@ import 'package:flutter/material.dart';
 import '../firebase_options.dart';
 import 'ProductList.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Firebase 초기화 설정
-  );
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ProductEdit extends StatefulWidget {
+  final String id;
+  const ProductEdit({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AddProduct(),
-    );
-  }
+  State<ProductEdit> createState() => _ProductEditState();
 }
 
-class AddProduct extends StatefulWidget {
-  const AddProduct({super.key});
-
-  @override
-  State<AddProduct> createState() => _AddProductState();
-}
-
-class _AddProductState extends State<AddProduct> {
+class _ProductEditState extends State<ProductEdit> {
   final FirebaseFirestore fs = FirebaseFirestore.instance;
   var productName = TextEditingController();
   var category = TextEditingController();
   var price = TextEditingController();
   var info = TextEditingController();
 
-  Future<void> insertProduct() async{
-    await fs.collection("Product").add({
-      "productName" : productName.text,
-      "category" : category.text,
-      "price" : int.parse(price.text),
-      "info" : info.text
+  @override
+  void initState() {
+    super.initState();
+    _selectProduct();
+  }
+
+  Future<void> _selectProduct() async {
+    var list = await fs.collection("Product").doc(widget.id).get();
+    var product = list.data()!;
+
+      setState(() {
+        productName.text = product["productName"];
+        category.text = product["category"];
+        price.text = product["price"].toString();
+        info.text = product["info"];
+      });
+  }
+
+  void EditProduct() async {
+    await fs.collection("Product").doc(widget.id).update({
+      "productName": productName.text,
+      "category": category.text,
+      "price": int.parse(price.text),
+      "info": info.text,
     });
+
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('제품 등록'),
+        title: Text('제품 수정'),
         centerTitle: true,
         backgroundColor: Colors.pink[100],
         actions: [
@@ -168,7 +169,7 @@ class _AddProductState extends State<AddProduct> {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: insertProduct,
+                onPressed: EditProduct,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigo,
                   shape: RoundedRectangleBorder(
